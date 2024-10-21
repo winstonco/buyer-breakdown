@@ -36,6 +36,7 @@ function App() {
   );
   const fn = async (_: HTMLFormElement) => {
     console.log("Submit");
+    setBreakdown(undefined);
     const cards = await Promise.all(
       fields.cards
         .split("\n")

@@ -35,12 +35,14 @@ export async function getSetBreakdown({
     }
     let filterExcludedSets: Scry.Card[];
     try {
-      filterExcludedSets =
-        excludedSets.length > 0
-          ? filterLegalInFormat.filter(
-              async (v) => excludedSets.indexOf(await v.getSet()) === -1
-            )
-          : filterLegalInFormat;
+      if (excludedSets.length === 0) {
+        filterExcludedSets = filterLegalInFormat;
+      } else {
+        const excludedSetCodes = excludedSets.map((set) => set.id);
+        filterExcludedSets = filterLegalInFormat.filter(
+          (card) => !excludedSetCodes.includes(card.set_id)
+        );
+      }
     } catch (e) {
       console.error(`Error filtering excluded sets: ${e}`);
       filterExcludedSets = [];

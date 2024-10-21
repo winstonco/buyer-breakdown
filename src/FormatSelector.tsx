@@ -18,7 +18,6 @@ const FormatSelector: Component<FormatSelectorProps> = ({
     "all",
     ...Object.keys(Scry.Format).filter((v) => Number.isNaN(Number.parseInt(v))),
   ];
-  console.log(options);
 
   const [selectedValue, setSelectedValue] =
     createSignal<keyof typeof Scry.Format>("commander");

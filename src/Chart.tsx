@@ -1,13 +1,32 @@
 import { onMount } from "solid-js";
 import type { Component } from "solid-js";
-import { Chart, Title, Tooltip, Legend, Colors } from "chart.js";
+import {
+  Chart,
+  Title,
+  Tooltip,
+  Legend,
+  Colors,
+  CategoryScale,
+  LinearScale,
+  BarController,
+  BarElement,
+} from "chart.js";
 import type { ChartOptions } from "chart.js";
 import { DefaultChart } from "solid-chartjs";
 import type { SetBreakdown } from "./data";
 
 const MyChart: Component<{ data: SetBreakdown }> = ({ data }) => {
   onMount(() => {
-    Chart.register(Title, Tooltip, Legend, Colors);
+    Chart.register(
+      Title,
+      Tooltip,
+      Legend,
+      Colors,
+      CategoryScale,
+      LinearScale,
+      BarController,
+      BarElement
+    );
   });
 
   const setData: {
