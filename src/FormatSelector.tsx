@@ -1,5 +1,5 @@
 import * as Scry from "scryfall-sdk";
-import { Component, createSignal, Suspense } from "solid-js";
+import { Component, createSignal } from "solid-js";
 import { Select } from "@thisbeyond/solid-select";
 import "@thisbeyond/solid-select/style.css";
 
