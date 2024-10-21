@@ -1,0 +1,51 @@
+#root {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.field-block {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 8px;
+}
+
+.field-block > div {
+  width: 100%;
+  min-height: 42px;
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.solid-select-container {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+input,
+textarea {
+  display: inline-block;
+  padding: 4px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-size: 16px;
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+}
+
+textarea {
+  border: 1px solid rgb(229, 231, 235);
+  border-radius: 0.25rem;
+  padding: 0.25rem 0.5rem;
+}
+
+.error-message {
+  color: red;
+  padding: 8px;
+}
+
+.error-input {
+  box-shadow: 0px 0px 2px 1px red;
+}
