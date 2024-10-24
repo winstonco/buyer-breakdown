@@ -9,10 +9,8 @@ import {
   BarController,
   BarElement,
 } from "chart.js";
-import type { ChartOptions } from "chart.js";
 import { Bar } from "react-chartjs-2";
 import type { SetBreakdown } from "@/lib/scryfall";
-import { useEffect } from "react";
 
 Chart.register(
   Title,
@@ -28,9 +26,9 @@ Chart.register(
 export default function MyChart({ data }: { data: SetBreakdown }) {
   const chartData: {
     labels: string[];
-    datasets: { label: string; data: any[] }[];
+    datasets: { label: string; data: number[] }[];
   } = {
-    labels: [],
+    labels: [] as string[],
     datasets: [
       {
         label: "No reprints",
@@ -40,17 +38,18 @@ export default function MyChart({ data }: { data: SetBreakdown }) {
         label: "All printings",
         data: [],
       },
-      {
-        label: "Cards",
-        data: [],
-      },
     ],
+  };
+  const extraData: {
+    cards: string[][];
+  } = {
+    cards: [],
   };
   for (const [setName, setData] of Object.entries(data)) {
     chartData.labels.push(setName);
     chartData.datasets[0].data.push(setData.ogPrints);
     chartData.datasets[1].data.push(setData.ogPrints + setData.reprints);
-    chartData.datasets[2].data.push(Array.from(setData.cards));
+    extraData.cards.push(Array.from(setData.cards));
   }
 
   return (
@@ -72,7 +71,7 @@ export default function MyChart({ data }: { data: SetBreakdown }) {
                 afterBody: (context) => {
                   console.log(context);
                   return (
-                    chartData.datasets[2].data[context[0].dataIndex] as string[]
+                    extraData.cards[context[0].dataIndex] as string[]
                   ).join("\n");
                 },
               },
