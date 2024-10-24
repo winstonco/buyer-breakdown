@@ -1,4 +1,16 @@
 :root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+:root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
@@ -13,6 +25,12 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+#root {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
 a {
   font-weight: 500;
   color: #646cff;
@@ -25,6 +43,7 @@ a:hover {
 body {
   margin: 0;
   display: flex;
+  flex-direction: column;
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
