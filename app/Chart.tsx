@@ -69,7 +69,6 @@ export default function MyChart({ data }: { data: SetBreakdown }) {
             tooltip: {
               callbacks: {
                 afterBody: (context) => {
-                  console.log(context);
                   return (
                     extraData.cards[context[0].dataIndex] as string[]
                   ).join("\n");

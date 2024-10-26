@@ -3,74 +3,152 @@
 import styles from "./page.module.css";
 import { handleSubmit } from "./actions";
 import { useState } from "react";
+import * as Scry from "scryfall-sdk";
 import { SetBreakdown } from "@/lib/scryfall";
 import MyChart from "./Chart";
+import SetSelect, { SetSelectOption } from "./SetSelect";
+import { ActionMeta } from "react-select";
 
 const cards = [
-  "Barkchannel Pathway",
-  "Beast Whisperer",
-  "Birds of Paradise",
-  "Breeding Pool",
-  "Careening Mine Cart",
-  "Command Tower",
-  "Copy Enchantment",
-  "Counterspell",
-  "Cryptolith Rite",
-  "Cultivate",
-  "Doubling Season",
-  "Enduring Curiosity",
-  "Enduring Vitality",
-  "Explore",
-  "Fabled Passage",
-  "Faerie Mastermind",
-  "Flooded Strand",
-  "Glittermonger",
-  "Gretchen Titchwillow",
-  "Growing Rites of Itlimoc",
-  "Growth Spiral",
-  "Hedge Maze",
-  "Heroic Intervention",
-  "Hornswoggle",
-  "Imperious Perfect",
-  "Intruder Alarm",
-  "Irenicus's Vile Duplication",
-  "Koma, Cosmos Serpent",
-  "Krosan Grip",
-  "Lotus Cobra",
-  "Mind's Eye",
-  "Negate",
-  "Parallel Lives",
-  "Pest Infestation",
-  "Polluted Delta",
-  "Primal Vigor",
-  "Reliquary Tower",
-  "Rhystic Study",
-  "Scute Swarm",
-  "Springheart Nantuko",
-  "Swan Song",
-  "Tatyova, Benthic Druid",
-  "Tireless Provisioner",
-  "Tireless Tracker",
+  "Green Sun's Zenith",
   "Uro, Titan of Nature's Wrath",
+  "Imperious Perfect",
+  "Aesi, Tyrant of Gyre Strait",
+  "Pongify",
+  "Careening Mine Cart",
+  "Faerie Mastermind",
+  "Rally the Galadhrim",
+  "City of Death",
+  "Glittermonger",
+  "Pest Infestation",
+  "Irenicus's Vile Duplication",
+  "Hornswoggle",
+  "Jaheira, Friend of the Forest",
+  "Lotus Cobra",
+  "Sprout Swarm",
+  "Growing Rites of Itlimoc",
+  "Scute Swarm",
+  "Quantum Misalignment",
+  "Springheart Nantuko",
+  "Rite of Replication",
+  "Tireless Provisioner",
+  "Cryptolith Rite",
+  "Walking Ballista",
+  "Lightning Greaves",
+  "Avenger of Zendikar",
+  "Thrasios, Triton Hero",
+  "Krosan Grip",
+  "Beast Within",
+  "Swan Song",
+  "Parallel Lives",
+  "Doubling Season",
+  "Primal Vigor",
+  "Fabled Passage",
+  "Reflecting Pool",
+  "Dryad Arbor",
   "Waterlogged Grove",
-  "Windswept Heath",
+  "Flooded Strand",
+  "Flooded Grove",
+  "City of Brass",
+  "Rejuvenating Springs",
+  "Barkchannel Pathway // Tidechannel Pathway",
+  "Polluted Delta",
+  "Hedge Maze",
+  "Breeding Pool",
+  "Birds of Paradise",
+  "Shadowspear",
+  "Sword of Feast and Famine",
+  "Sword of Forge and Frontier",
+  "Scalding Tarn",
+  "Smothering Tithe",
+  "City of Brass",
+  "Arcane Signet",
+  "Mana Confluence",
+  "Swan Song",
+  "Faithless Looting",
+  "Xander's Lounge",
+  "Blood Crypt",
+  "Ancient Silver Dragon",
+  "Force of Negation",
+  "Entomb",
+  "Bojuka Bog",
   "Wooded Foothills",
-  "Yavimaya Coast",
+  "Urborg, Tomb of Yawgmoth",
+  "Ketria Triome",
+  "Ancient Brass Dragon",
+  "Savai Triome",
+  "Ziatora's Proving Ground",
+  "Indatha Triome",
+  "Windfall",
+  "Blasphemous Act",
+  "Boseiju, Who Endures",
+  "Misty Rainforest",
+  "Exhume",
+  "Assassin's Trophy",
+  "Urza's Ruinous Blast",
+  "Zagoth Triome",
+  "Spara's Headquarters",
+  "Bloodstained Mire",
+  "Fierce Guardianship",
+  "Verdant Catacombs",
+  "Morophon, the Boundless",
+  "Gemstone Caverns",
+  "Ancient Tomb",
+  "Rhythm of the Wild",
+  "Temple Garden",
+  "Flooded Strand",
+  "Three Visits",
+  "Old Gnawbone",
+  "Stomping Ground",
+  "Raffine's Tower",
+  "Delighted Halfling",
+  "Dance of the Dead",
+  "Watery Grave",
+  "Buried Alive",
+  "Toxic Deluge",
+  "Nature's Lore",
+  "Ancient Copper Dragon",
 ];
+
 export default function Home() {
-  // const isConnected = await testDatabaseConnection();
-
-  // const handleSubmit: FormEventHandler<HTMLFormElement> = () => {
-  //   doStuffWithCards(cardNames).then((v) => console.log(v));
-  // };
-
   const [breakdown, setBreakdown] = useState<SetBreakdown>();
+  const [excludedSets, setExcludedSets] = useState<string[]>([]);
+
+  const onSetChange = (
+    option: readonly SetSelectOption[],
+    _: ActionMeta<SetSelectOption>,
+  ) => {
+    setExcludedSets(option.map((v) => v.value));
+  };
 
   const formAction = (formData: FormData) => {
+    formData.set("excludedSets", excludedSets.join("\n"));
     handleSubmit(formData)
       .then((v) => setBreakdown(v))
       .catch((e) => console.error(e));
   };
+
+  const formatOptions: {
+    label: string;
+    value: keyof typeof Scry.Format | "all";
+  }[] = [
+    "all",
+    ...Object.keys(Scry.Format).filter((v) => Number.isNaN(Number.parseInt(v))),
+  ].map((v) => {
+    let label = v.charAt(0).toUpperCase() + v.slice(1);
+    switch (v) {
+      case "historicbrawl":
+        label = "Historic Brawl";
+        break;
+      case "paupercommander":
+        label = "Pauper Commander";
+        break;
+    }
+    return {
+      value: v as keyof typeof Scry.Format,
+      label: label,
+    };
+  });
 
   return (
     <>
@@ -82,24 +160,31 @@ export default function Home() {
         </p>
         <div className={styles.fieldBlock}>
           <label htmlFor="excludedSets">Excluded Sets</label>
-          {/* <SetSelector
+          <SetSelect
             id="excludedSets"
             name="excludedSets"
-            onChange={(set) => setFields("excludedSets", set)}
+            onChange={onSetChange}
           />
-          <Show when={errors.excludedSets}>
-            <ErrorMessage error={errors.excludedSets} />
-          </Show> */}
         </div>
         <div className={styles.fieldBlock}>
           <label htmlFor="format">Format</label>
-          {/* <FormatSelector
-            id="format"
-            onChange={(format) => setFields("format", format)}
+          <select name="format" id="format" defaultValue={"commander"}>
+            {formatOptions.map((v) => (
+              <option key={v.value} value={v.value}>
+                {v.label}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className={styles.fieldBlock}>
+          <label htmlFor="oldestYear">Oldest Year</label>
+          <input
+            type="number"
+            name="oldestYear"
+            id="oldestYear"
+            placeholder="Oldest year to include"
+            defaultValue={2010}
           />
-          <Show when={errors.format}>
-            <ErrorMessage error={errors.format} />
-          </Show> */}
         </div>
         <div className={styles.fieldBlock}>
           <label htmlFor="cards">Card List</label>
@@ -113,12 +198,8 @@ export default function Home() {
               placeholder="Paste card list here"
               defaultValue={cards.join("\n")}
               required
-              // use:validate
             ></textarea>
           </div>
-          {/* <Show when={errors.cards}>
-            <ErrorMessage error={errors.cards} />
-          </Show> */}
         </div>
 
         <button type="submit">Submit</button>

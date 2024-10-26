@@ -1,17 +1,27 @@
 "use server";
 
 import {
+  isFormatOption,
   getCardList,
   getReprints,
   getSetBreakdown,
   init,
+  FormatOption,
 } from "@/lib/scryfall";
 
-export async function doStuffWithCards(cardNames: string[]) {
+export async function handleSubmit(data: FormData) {
+  const cardNames = ((data.get("cards") ?? "") as string).split("\n");
+  const dateLimit = new Date((data.get("oldestYear") ?? "0") as string);
+  const dataFormat = (data.get("format") ?? "") as string;
+  let format: FormatOption = "all";
+  if (isFormatOption(dataFormat)) {
+    format = dataFormat;
+  }
+  const excludedSets = ((data.get("excludedSets") ?? "") as string).split("\n");
+
   init();
-  console.log("Doing stuff");
   const cards = await getCardList(cardNames);
-  console.log(cards);
+  // console.log(cards);
   const prints = await getReprints(
     cards,
     (card) =>
@@ -19,19 +29,15 @@ export async function doStuffWithCards(cardNames: string[]) {
       !card.games.includes("paper") ||
       card.digital ||
       card.promo ||
+      (format !== "all" && !card.isLegal(format)) ||
+      excludedSets.includes(card.set) ||
       card.set.length !== 3 ||
-      card.set_type === "memorabilia"
+      card.set_type === "memorabilia" ||
+      new Date(card.released_at) < dateLimit
   );
-  console.log("Reprints:");
-  console.log(prints);
+
   const breakdown = await getSetBreakdown(prints);
   console.log("Breakdown:");
   console.log(breakdown);
-  return breakdown;
-}
-
-export async function handleSubmit(data: FormData) {
-  const cards = (data.get("cards") as string).split("\n");
-  const breakdown = await doStuffWithCards(cards);
   return breakdown;
 }

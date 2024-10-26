@@ -10,6 +10,17 @@ export function init() {
   }
 }
 
+const formats = Object.keys(Scry.Format).filter((v) =>
+  Number.isNaN(Number.parseInt(v))
+);
+
+export type FormatOption = keyof typeof Scry.Format | "all";
+
+export function isFormatOption(v: string): v is FormatOption {
+  if (v === "all") return true;
+  return formats.includes(v);
+}
+
 export async function getCardList(cardNames: string[]) {
   const collection = cardNames.map((name) => Scry.CardIdentifier.byName(name));
   const cards = await Scry.Cards.collection(...collection).waitForAll();
@@ -63,7 +74,6 @@ export async function getSetBreakdown(
       output[set].cards.add(card.name);
       if (card.reprint) {
         output[set].reprints++;
-        console.log("REPRINT: " + card.name);
       } else {
         output[set].ogPrints++;
       }
