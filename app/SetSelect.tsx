@@ -12,7 +12,7 @@ type SetSelectProps = {
   name?: string;
   onChange?: (
     option: readonly SetSelectOption[],
-    actionMeta: ActionMeta<SetSelectOption>
+    actionMeta: ActionMeta<SetSelectOption>,
   ) => void;
 };
 
@@ -20,7 +20,7 @@ async function getOptions() {
   const all = await Scry.Sets.all();
   return all
     .filter((set) => set.code.length === 3)
-    .map((v) => ({ value: v.name, label: `${v.name} [${v.code}]` }));
+    .map((v) => ({ value: v.code, label: `${v.name} [${v.code}]` }));
 }
 
 export default function SetSelect(props: SetSelectProps) {

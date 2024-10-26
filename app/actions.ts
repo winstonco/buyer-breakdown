@@ -33,7 +33,7 @@ export async function handleSubmit(data: FormData) {
       excludedSets.includes(card.set) ||
       card.set.length !== 3 ||
       card.set_type === "memorabilia" ||
-      new Date(card.released_at) < dateLimit
+      new Date(card.released_at) < dateLimit,
   );
 
   const breakdown = await getSetBreakdown(prints);
